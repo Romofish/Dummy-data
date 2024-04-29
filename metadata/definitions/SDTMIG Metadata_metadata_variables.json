@@ -9146,13 +9146,6 @@
                 "Core": "Req",
                 "Order": 6.0
             },
-            "NaN": {
-                "Variable Label": NaN,
-                "Type": NaN,
-                "Controlled Terms, Codelist or Format": NaN,
-                "Core": NaN,
-                "Order": NaN
-            },
             "PPTEST": {
                 "Variable Label": "Parameter Name",
                 "Type": "Char",
