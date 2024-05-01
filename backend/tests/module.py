@@ -1,65 +1,69 @@
 import pandas as pd
 import json
 import random
-from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+from faker import Faker
 
-# ISO 8601日期生成函数
-def generate_iso8601_datetime():
-    current_time = datetime.now()
-    random_date = current_time + timedelta(days=random.randint(-365, 365))
-    return random_date.isoformat()
+load_dotenv()
+fake = Faker()
 
-# 随机国家代码生成函数
-def generate_country_code():
-    country_codes = ['USA', 'CAN', 'GBR', 'AUS', 'DEU', 'FRA', 'JPN', 'CHN', 'IND', 'BRA']
-    return random.choice(country_codes)
+# Load the variable and codelist metadata
+variables_path = 'metadata/definitions/SDTMIG Metadata_metadata_variables.json'
+codelists_path = 'metadata/SDTM Terminology-update_metadata_codelist.json'
 
-def load_json_data(json_path):
-    with open(json_path, 'r') as file:
-        return json.load(file)['data']
 
-def generate_dummy_value(var_name, var_details, codelist_values):
-    if var_details['Type'] == 'Num':
-        return random.randint(1, 1000)
-    elif var_details['Type'] == 'Char':
-        if codelist_values:
-            return random.choice(codelist_values)
-        elif var_details['Controlled Terms, Codelist or Format']:
-            return "Missing in codelist"
-        elif var_name == 'COUNTRY':
-            return generate_country_code()
-        else:
-            return "DUMMY"
-    elif var_details['Type'] == 'ISO 8601 datetime or interval':
-        return generate_iso8601_datetime()
+# Define a function to generate random data based on the type
+def generate_random_data_by_type(var_type, codelist):
+    if var_type == 'Num':
+        return random.randint(1, 100)
+    elif var_type == 'Char':
+        return fake.word()
+    elif var_type == 'ISO 8601 datetime or interval':
+        return datetime.now().isoformat()
+    elif var_type == 'COUNTRY':
+        return fake.country_code(representation='alpha-3')
     else:
-        return "N/A"
+        return fake.word()  # Default dummy data for any other type
 
-def generate_dummy_dataset(domain, num_rows, variables_metadata, codelists_metadata):
-    variables = variables_metadata.get(domain, {})
-    dummy_dataset = {var_name: [] for var_name in variables}
+# Define a function to create dummy data for a domain
+def create_dummy_data(domain, num_records, variables_metadata, codelists_metadata):
+    domain_vars = variables_metadata.get(domain, {})
+    dummy_data = {}
 
-    for _ in range(num_rows):
-        for var_name, var_details in variables.items():
-            codelist_key = var_details.get('Controlled Terms, Codelist or Format')
-            codelist_values = codelists_metadata.get(codelist_key, [])
-            dummy_value = generate_dummy_value(var_name, var_details, codelist_values)
-            dummy_dataset[var_name].append(dummy_value)
+    for var_name, var_attr in domain_vars.items():
+        var_type = var_attr.get('Type')
+        codelist = var_attr.get('Controlled Terms, Codelist or Format', '').strip()
+        dummy_data[var_name] = []
 
-    return pd.DataFrame(dummy_dataset)
+        for _ in range(num_records):
+            # Check for special type 'COUNTRY' or ISO datetime before looking for codelists
+            if 'COUNTRY' in var_name.upper() or 'datetime' in var_type.lower() or 'interval' in var_type.lower():
+                value = generate_random_data_by_type(var_type, None)
+            elif codelist and codelist in codelists_metadata:
+                # If a codelist is defined and exists, choose a random term from the codelist
+                value = random.choice(codelists_metadata[codelist])
+            elif codelist and codelist not in codelists_metadata:
+                # If a codelist is defined but does not exist, use a placeholder
+                value = "受控术语缺失"
+            else:
+                # If there is no codelist, generate data based on the type
+                value = generate_random_data_by_type(var_type, None)
 
-# 加载 JSON 数据
-variables_json_path = 'metadata/definitions/SDTMIG Metadata_metadata_variables.json' 
-codelists_json_path = 'metadata/SDTM Terminology-update_metadata_codelist.json'  
-variables_metadata = load_json_data(variables_json_path)
-codelists_metadata = load_json_data(codelists_json_path)
+            dummy_data[var_name].append(value)
 
-# 生成虚拟数据集
-domain_to_generate = 'DM'
-num_rows_to_generate = 10
-dummy_dataset = generate_dummy_dataset(domain_to_generate, num_rows_to_generate, variables_metadata, codelists_metadata)
+    return pd.DataFrame(dummy_data)
 
-# 打印或保存虚拟数据集
-print(dummy_dataset)
-dummy_dataset.to_csv('backend/tests/outputs/dummy_dataset.csv', index=False)
+# Load metadata from JSON files
+variables_metadata = load_json_data(variables_path)
+codelists_metadata = load_json_data(codelists_path)
 
+# Generate dummy data for the AE domain
+dummy_domain = 'AE'
+num_records = 10
+dummy_dataset = create_dummy_data(dummy_domain, num_records, variables_metadata, codelists_metadata)
+
+# Convert the dictionary to a JSON string
+dummy_json = json.dumps(dummy_dataset, indent=4, ensure_ascii=False)
+print(dummy_json)
