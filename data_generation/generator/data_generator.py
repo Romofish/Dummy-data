@@ -28,6 +28,9 @@ def generate_dummy_data(metadata, num_rows):
                 if "ISO 8601 datetime or interval" in controlled_terms:
                     data_frame[var_name] = [datetime.datetime.now().isoformat() for _ in range(num_rows)]
                     # logging.info(f"Generated ISO 8601 datetime for {var_name}")
+                elif "ISO 8601 duration" in controlled_terms:
+                    data_frame[var_name] = [f"PT{random.randint(0, 100)}M" for _ in range(num_rows)]
+                    # logging.info(f"Generated ISO 8601 duration for {var_name}")
                 elif var_name == "COUNTRY":
                     data_frame[var_name] = [random.choice(list(countries)).alpha3 for _ in range(num_rows)]
                     # logging.info(f"Generated country codes for {var_name}")

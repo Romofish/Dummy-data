@@ -3,6 +3,7 @@ from metadata_reader import load_metadata
 from data_generator import generate_dummy_data
 from dataset_selector import select_datasets
 from output_manager import save_to_file
+import os
 
 # Load metadata
 metadata = load_metadata()
@@ -16,6 +17,11 @@ output_path = input("Enter the path where you want the datasets to be saved: ")
 # Ensure output path is specified, provide default if empty
 if not output_path:
     output_path = "backend/tests/outputs"  # Default path can be adjusted as needed
+
+# Check if the output directory exists, if not, create it
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
+    print(f"Created output directory: {output_path}")
 
 # Filter metadata based on selection
 selected_metadata = select_datasets(metadata, selected_datasets)
