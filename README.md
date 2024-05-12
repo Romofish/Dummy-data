@@ -51,9 +51,15 @@ git checkout develop
 python -m venv venv
 # 激活虚拟环境
 venv\Scripts\activate
+# 修改虚拟环境里的环境变量以引入不同文件夹的module路径
+venv/Scripts/activate 文件：
+export PYTHONPATH="$PYTHONPATH:/path/to/your/module"
+
 # 安装项目依赖
 pip install -r requirements.txt
-```
+# 开发项目代码
+# 生成项目依赖
+pip freeze > requirements.txt
 
 ### 退出虚拟环境
 ```bash
@@ -62,3 +68,33 @@ deactivate
 
 ### 开发项目代码，推送到远程仓库
 可使用VSCODE 自带Source Control插件完成,虚拟环境如果没有明明成venv，请把对应名称添加至[项目忽略文件](.gitignore)，否则会上传至Gitlab项目文件夹
+
+
+# 项目模拟数据集生成逻辑（待完善）
+1.针对Metadata_vars.json 默认输出以第一个键为单位的的数据集里的所有变量，组成一个数据集。即AE,DS,LB等等，需要一个模块让用户选择生成哪些数据集
+1.第一行是metadata各个变量的名字
+2.第二行是对应的Variable Label
+然后按照metadata里约定的属性来生成变量，优先级如下：
+1.有Controlled Terms, Codelist or Format的，随机生成Controlled Terms, Codelist or Format里的某个值
+1.1 Controlled Terms, Codelist or Format 为ISO 8601 datetime or interval的，生成符合这个标准的时间
+1.2 COUNTRY 变量，生成 ISO 3166-1 Alpha-3 标准的三位国家代码
+1.3 Controlled Terms, Codelist or Format为空的，按照Type生成变量，Char生成"NA' "Num"生成".".
+完成这些后，我们再对这一步生成的数据集做进一步逻辑处理，即用户要用另一个文件来约定这些受控术语缺失的应该生成什么，这一步将在另一个data_generator_2中完成。
+
+
+## Pending Task 20240513
+### data_generator_2 :
+add another detaileed metadata file per Novartis stage/reference metadata, to add the information for Char/Num format and special values such as MedDRA,WHODrug
+
+### data_generator_3 :
+add another logic file to define the connection logic of the varibles within One dataset
+
+### data_generator_4 :
+add another logic file to define the connection logic with different datasets
+
+### data_generator_5:
+Wrong/right datasets
+
+### data_generator_6:
+CDASH/ADAM datasets
+
