@@ -51,9 +51,6 @@ git checkout develop
 python -m venv venv
 # 激活虚拟环境
 venv\Scripts\activate
-# 修改虚拟环境里的环境变量以引入不同文件夹的module路径（非必须，可用sys.path代替）
-venv/Scripts/activate 文件：
-export PYTHONPATH="$PYTHONPATH:/path/to/your/module"
 
 # 安装项目依赖
 pip install -r requirements.txt

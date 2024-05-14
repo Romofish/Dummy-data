@@ -1,0 +1,11 @@
+Here is the general configuration file for the data generation. 
+It is used to set the general parameters for the data generation. The file is in XML format and contains the following parameters:
+/// <summary>
+/// This method performs a specific operation.
+/// </summary>
+/// <param name="parameter">The parameter description.</param>
+/// <returns>The return value description.</returns>
+public void MyMethod(int parameter)
+{
+    // Code implementation
+}
