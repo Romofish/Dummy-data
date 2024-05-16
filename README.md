@@ -46,23 +46,32 @@ git checkout develop
 ```
 
 ### 安装虚拟环境及项目依赖
+
 ```bash
 # 创建虚拟环境
 python -m venv venv
+
 # 激活虚拟环境
 venv\Scripts\activate
 
 # 安装项目依赖
 pip install -r requirements.txt
+
+# 如果遇到网络问题，可以使用本地轮子文件安装依赖
+pip install --no-index --find-links=package -r requirements.txt
+
 # 开发项目代码
-# 生成项目依赖
+
+# 生成项目依赖列表
 pip freeze > requirements.txt
 
-### 退出虚拟环境
+# 退出虚拟环境
 deactivate
 ```
 
 ### 开发项目代码，推送到远程仓库
+先将.env文件放置在项目根目录
+
 可使用VSCODE 自带Source Control插件完成,虚拟环境如果没有命名成venv，请把对应名称添加至[项目忽略文件](.gitignore)，否则会上传至Gitlab项目文件夹
 
 
