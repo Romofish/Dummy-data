@@ -1,0 +1,18 @@
+relationships:
+  - name: Complex Date Comparison
+    description: Ensure that the date of A is not earlier than the date of B, and optionally check C against D
+    enabled: true
+    constraints:
+      - source: [A, C]
+        target: [B, D]
+        condition: [greater_than_or_equal_to, less_than]
+        apply: [true, false]
+
+  - name: Multi-variable Condition
+    description: Multiple variables must satisfy a single condition
+    enabled: false
+    constraints:
+      - variables: [E, F, G]
+        condition: sum_greater_than
+        value: 100
+

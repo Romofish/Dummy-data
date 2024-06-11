@@ -104,7 +104,7 @@ add another logic file to define the connection logic of the varibles within One
 add another logic file to define the connection logic with different datasets
 
 ### data_generator_5:
-Wrong/right datasets
+Wrong/right, general config datasets
 
 ### data_generator_6:
 CDASH/ADAM datasets
