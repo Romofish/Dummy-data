@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <script>
+        function getOutput() {
+            fetch('http://localhost:5000/api/output')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received data:', data);
+                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching output data');
+                });
+        }
+
+        function getConfig() {
+            fetch('http://localhost:5000/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received config data:', data);
+                    document.getElementById('config').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching config data');
+                });
+        }
+
+        function updateConfig() {
+            const domain = document.getElementById('domain').value;
+            const variable = document.getElementById('variable').value;
+            const variableLabel = document.getElementById('variableLabel').value;
+            const type = document.getElementById('type').value;
+            const controlledTerms = document.getElementById('controlledTerms').value.split(',');
+            const core = document.getElementById('core').value;
+            const order = parseFloat(document.getElementById('order').value);
+
+            const updatedConfig = {
+                "Variable Label": variableLabel,
+                "Type": type,
+                "Controlled Terms, Codelist or Format": controlledTerms,
+                "Core": core,
+                "Order": order
+            };
+
+            fetch(`http://localhost:5000/api/config/${domain}/${variable}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedConfig)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Update response:', data);
+                alert('Config updated successfully');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating config data');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <button onclick="getOutput()">Get Output</button>
+    <pre id="output"></pre>
+
+    <button onclick="getConfig()">Get Config</button>
+    <pre id="config"></pre>
+
+    <h2>Update Config</h2>
+    <label for="domain">Domain:</label>
+    <input type="text" id="domain" placeholder="e.g. AE"><br>
+    <label for="variable">Variable:</label>
+    <input type="text" id="variable" placeholder="e.g. STUDYID"><br>
+    <label for="variableLabel">Variable Label:</label>
+    <input type="text" id="variableLabel" placeholder="e.g. Study Identifier"><br>
+    <label for="type">Type:</label>
+    <input type="text" id="type" placeholder="e.g. Char"><br>
+    <label for="controlledTerms">Controlled Terms (comma separated):</label>
+    <input type="text" id="controlledTerms" placeholder="e.g. Term1,Term2"><br>
+    <label for="core">Core:</label>
+    <input type="text" id="core" placeholder="e.g. Req"><br>
+    <label for="order">Order:</label>
+    <input type="text" id="order" placeholder="e.g. 1.0"><br>
+    <button onclick="updateConfig()">Update Config</button>
+</body>
+</html>

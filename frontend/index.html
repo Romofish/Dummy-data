@@ -1,0 +1,185 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <script>
+        function getOutput() {
+            fetch('http://localhost:5000/api/output')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getConfig() {
+            fetch('http://localhost:5000/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('config').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateConfig() {
+            const domain = document.getElementById('domain').value;
+            const variable = document.getElementById('variable').value;
+            const newConfig = {
+                "Variable Label": document.getElementById('variableLabel').value,
+                "Type": document.getElementById('type').value,
+                "Controlled Terms, Codelist or Format": document.getElementById('controlledTerms').value.split(','),
+                "Core": document.getElementById('core').value,
+                "Order": parseFloat(document.getElementById('order').value)
+            };
+
+            fetch(`http://localhost:5000/api/config/${domain}/${variable}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newConfig)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Config updated successfully');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <button onclick="getOutput()">Get Output</button>
+    <pre id="output"></pre>
+
+    <button onclick="getConfig()">Get Config</button>
+    <pre id="config"></pre>
+
+    <h2>Update Config</h2>
+    <label for="domain">Domain:</label>
+    <input type="text" id="domain" placeholder="e.g. AE"><br>
+    <label for="variable">Variable:</label>
+    <input type="text" id="variable" placeholder="e.g. STUDYID"><br>
+    <label for="variableLabel">Variable Label:</label>
+    <input type="text" id="variableLabel" placeholder="e.g. Study Identifier"><br>
+    <label for="type">Type:</label>
+    <input type="text" id="type" placeholder="e.g. Char"><br>
+    <label for="controlledTerms">Controlled Terms (comma separated):</label>
+    <input type="text" id="controlledTerms" placeholder="e.g. Term1,Term2"><br>
+    <label for="core">Core:</label>
+    <input type="text" id="core" placeholder="e.g. Req"><br>
+    <label for="order">Order:</label>
+    <input type="text" id="order" placeholder="e.g. 1.0"><br>
+    <button onclick="updateConfig()">Update Config</button>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <script>
+        function getOutput() {
+            fetch('http://localhost:5000/api/output')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received data:', data);
+                    document.getElementById('output-descriptions').textContent = JSON.stringify(data.descriptions, null, 2);
+                    document.getElementById('output-records').textContent = JSON.stringify(data.records, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching output data');
+                });
+        }
+
+        function updateOutput() {
+            try {
+                const descriptions = JSON.parse(document.getElementById('output-descriptions').textContent);
+                const records = JSON.parse(document.getElementById('output-records').textContent);
+                const updatedData = {
+                    descriptions: descriptions,
+                    records: records
+                };
+                fetch('http://localhost:5000/api/output', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify([updatedData.descriptions, ...updatedData.records])
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Update response:', data);
+                    alert('Output updated successfully');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating output data');
+                });
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                alert('Error parsing JSON data');
+            }
+        }
+
+        function getConfig() {
+            fetch('http://localhost:5000/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received config data:', data);
+                    document.getElementById('config').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching config data');
+                });
+        }
+
+        function updateConfig() {
+            try {
+                const newConfig = JSON.parse(document.getElementById('config').textContent);
+                fetch('http://localhost:5000/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newConfig)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Update response:', data);
+                    alert('Config updated successfully');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating config data');
+                });
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                alert('Error parsing JSON data');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <button onclick="getOutput()">Get Output</button>
+    <button onclick="updateOutput()">Update Output</button>
+    <h2>Output Descriptions</h2>
+    <textarea id="output-descriptions" rows="10" cols="50"></textarea>
+    <h2>Output Records</h2>
+    <textarea id="output-records" rows="10" cols="50"></textarea>
+
+    <button onclick="getConfig()">Get Config</button>
+    <button onclick="updateConfig()">Update Config</button>
+    <h2>Config</h2>
+    <textarea id="config" rows="10" cols="50"></textarea>
+</body>
+</html>
