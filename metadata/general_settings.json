@@ -1,0 +1,27 @@
+{
+    "USUBJID": {
+        "type": "combination",
+        "components": ["STUDYID", "SUBJID"]
+    },
+    "STUDYID": {
+        "type": "fixed",
+        "value": "CABC123A2201"
+    },
+    "SITEID": {
+        "type": "range",
+        "ranges": [
+            {"start": 1001, "end": 1050},
+            {"start": 2001, "end": 2050},
+            {"start": 5001, "end": 5050}
+        ]
+    },
+    "SUBJID": {
+        "type": "range",
+        "ranges": [
+            {"start": 1001001, "end": 1050500},
+            {"start": 2001001, "end": 2050500},
+            {"start": 5001001, "end": 5050500}
+        ]
+    }
+}
+

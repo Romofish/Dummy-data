@@ -1,6 +1,6 @@
 {
     "source_file": "SDTMIG Metadata.xlsx",
-    "extraction_date": "2024-04-29 14:46:22",
+    "extraction_date": "2024-08-01 11:47:18",
     "version": "SDTMIG 3.4",
     "data": {
         "AE": {
@@ -9145,6 +9145,13 @@
                 "Controlled Terms, Codelist or Format": "(PKPARMCD) ",
                 "Core": "Req",
                 "Order": 6.0
+            },
+            "NaN": {
+                "Variable Label": NaN,
+                "Type": NaN,
+                "Controlled Terms, Codelist or Format": NaN,
+                "Core": NaN,
+                "Order": NaN
             },
             "PPTEST": {
                 "Variable Label": "Parameter Name",

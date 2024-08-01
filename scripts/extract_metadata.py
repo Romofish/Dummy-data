@@ -1,3 +1,4 @@
+# Extracts metadata from the 'Variables' sheet of the SDTMIG Metadata Excel file and saves it to a JSON file for merging with the codelist metadata.
 import pandas as pd
 import json
 from datetime import datetime

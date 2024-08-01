@@ -1,3 +1,5 @@
+# Extract the metadata codelist info from the Excel file to a JSON file, next step is to merge it with the variables metadata.
+
 import pandas as pd
 import json
 from datetime import datetime
